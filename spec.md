@@ -1,27 +1,27 @@
 # Spec
 
-- Open app
-  - New Project screen
-    - Select PDF
-      - Show number of pages in pdf
-      - Select number of booklets
-        - Show number of pages per booklet
-      - Set Layout
-        - `x` pages across
-        - `y` pages down
-      - Show Preview
-      - Other options TK
-      - Save project
-        - Write config to json
-      - Output PDF
-  - Open Project
-    - Select config file
-      - Check for correct `@context`
-      - Check for input file
-        - Surface errors
-  - Show Info
-    - Show logo
-      - Eyes follow cursor/focus
-    - Show name, version, source, url, etc
-  - Show Preferences
-    - Choose default values
+- [x] Open app
+  - [x] New Project screen
+    - [x] Select PDF
+      - [x] Show number of pages in pdf
+      - [x] Select number of booklets
+        - [x] Show number of pages per booklet
+      - [x] Set Layout
+        - [x] `x` pages across
+        - [x] `y` pages down
+      - [ ] Show Preview
+      - [ ] Other options TK
+      - [ ] Save project
+        - [ ] Write config to json
+      - [x] Output PDF
+  - [ ] Open Project
+    - [ ] Select config file
+      - [ ] Check for correct `@context`
+      - [ ] Check for input file
+        - [ ] Surface errors
+  - [ ] Show Info
+    - [x] Show logo
+      - [x] Eyes follow cursor/focus
+    - [ ] Show name, version, source, url, etc
+  - [ ] Show Preferences
+    - [ ] Choose default values

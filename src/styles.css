@@ -84,3 +84,18 @@ button:disabled {
     background-color: #0f0f0f69;
   }
 }
+
+rect {
+  width: 1px;
+  height: 1px;
+  fill: white;
+  border: 1px solid white;
+}
+.pupil {
+  transform: translate3d(0, 0, 0);
+  transition: transform linear 100ms;
+}
+.pupil.shifty {
+  transform: translate3d(-1px, 0, 0);
+  transition: transform linear 100ms;
+}

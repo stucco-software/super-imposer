@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "Imposer",
+    "productName": "Super Imposer",
     "version": "0.0.0"
   },
   "tauri": {
@@ -43,11 +43,20 @@
     },
     "windows": [
       {
+        "label": "new",
         "fullscreen": false,
         "resizable": true,
-        "title": "imposer",
-        "width": 800,
-        "height": 600
+        "title": "New Project",
+        "width": 400,
+        "height": 650
+      },{
+        "label": "about",
+        "fullscreen": false,
+        "resizable": false,
+        "title": "About Super Imposer",
+        "width": 250,
+        "height": 350,
+        "url": "about.html"
       }
     ]
   }
