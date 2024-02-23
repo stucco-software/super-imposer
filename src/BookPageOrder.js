@@ -1,4 +1,5 @@
 export const bookPageOrder = (numPages, numAcross, numDown, signatureSize) => {
+    console.log(numPages, numAcross, numDown, signatureSize)
     let VERSION = '0.9';
     let res = { success: false };
     let debug = false;
@@ -102,5 +103,6 @@ export const bookPageOrder = (numPages, numAcross, numDown, signatureSize) => {
         'version': VERSION,
         'success': true
     };
+    console.log(res)
     return res;
 }

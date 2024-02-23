@@ -16,17 +16,86 @@
   <body>
     <h1>New Project</h1>
 
-    <form>
-      <label>
-        Select PDF
-        <input
-          name="simp:input"
-          placeholder=".pdf"
-          type="file"
-          accept=".pdf" />
-      </label>
-      <!-- <button type="submit">Impose</button> -->
-    </form>
+    <h2>Input</h2>
+
+    <label>
+      Select PDF
+      <input
+        name="simp:input"
+        placeholder=".pdf"
+        type="file"
+        accept=".pdf" />
+    </label>
+
+    <p>
+      Source PDF <output
+        property="simp:inputLength">n/a</output>
+      pages.
+    </p>
+
+    <h2>
+      Output
+    </h2>
+
+    <label>
+      <input
+        disabled
+        value=0
+        min=1
+        type="number"
+        name="simp:outputSignatures">
+      Output Signatures.
+    </label>
+
+    <p>
+      <output
+        name="simp:pagesPerSignature">0</output> pages per signature.
+    </p>
+
+    <h3>
+      Signature Layout:
+    </h3>
+
+    <label>
+      <input
+        disabled
+        value=0
+        step=2
+        min=2
+        type="number"
+        name="simp:imposeX"> across
+    </labek>
+    <label>
+      <input
+        disabled
+        value=0
+        min=1
+        type="number"
+        name="simp:imposeY"> down
+    </label>
+
+    <p>
+      <button
+        property="simp:showPreview"
+        disabled>
+        Preview
+      </button>
+    </p>
+
+    <p>
+      <button
+        property="simp:saveConfig"
+        disabled>
+        Save Project
+      </button>
+      <button
+        property="simp:outputPDF"
+        disabled>
+        Output PDF
+      </button>
+    </p>
+
+    <!-- <button type="submit">Impose</button> -->
 
 
   </body>
