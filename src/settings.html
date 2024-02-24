@@ -15,84 +15,50 @@
 
   <body>
     <header>
-      <h1>Impose</h1>
-      <button>
-        𝒊
-      </button>
+      <h1>Settings</h1>
     </header>
 
     <fieldset>
       <legend>
-        Select PDF
-      </legend>
-      <input
-        name="simp:input"
-        placeholder=".pdf"
-        type="file"
-        accept=".pdf" />
-      <p>
-        Source PDF <output
-          property="simp:inputLength">n/a</output>
-        pages.
-      </p>
-    </fieldset>
-
-    <fieldset>
-      <legend>
-        Signatures
+        Defaults
       </legend>
 
       <label>
         <span>Output Signatures.</span>
         <input
-          disabled
-          value=0
+          value=1
           min=1
           type="number"
-          name="simp:outputSignatures">
+          name="simp:defaultSignatures">
       </label>
       <label>
         <span>
           Pages Across
         </span>
         <input
-          disabled
-          value=0
+          value=2
           step=2
           min=2
           type="number"
-          name="simp:imposeX">
+          name="simp:defaultX">
       </label>
       <label>
         <span>
           Pages Down
         </span>
         <input
-          disabled
-          value=0
+          value=1
           min=1
           type="number"
-          name="simp:imposeY">
+          name="simp:defaultY">
       </label>
-      <p>
-        <output
-          property="simp:pagesPerSignature">0</output> pages per signature.
-      </p>
     </fieldset>
 
     <footer>
       <p class="txt-right">
-
         <button
-          property="simp:showPreview"
-          disabled>
-          Preview
-        </button>
-
-        <button
-          property="simp:outputPDF"
-          disabled>
-          Output PDF
+          property="simp:saveDefaults">
+          Save
         </button>
       </p>
     </footer>

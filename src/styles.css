@@ -1,101 +1,125 @@
+/* Core Vars */
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+  --sans-stack:  -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  --blank: #fff;
+  --white: #eeeeee;
+  --black: #292929;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  --txt-sm: 0.8rem;
+  --txt-base: 1rem;
+  --txt-md: 1.25rem;
+  --txt-lg: 1.56rem;
+  --txt-xl: 1.95rem;
+  --txt-xxl: 2.44rem;
+  --txt-xxxl: 3.05rem;
+}
 
+/* Reset */
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent font size inflation */
+html {
   font-synthesis: none;
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
 }
 
-a {
+/* Remove default margin */
+body, h1, h2, h3, h4, p,
+figure, blockquote, dl, dd {
+  margin-block: 0;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input, button,
+textarea, select {
+  font: inherit;
+}
+
+html {
+  font-family: var(--sans-stack);
+  font-size: var(--txt-base);
+  line-height: 1.166;
+  font-weight: 400;
+  color: var(--black);
+  background-color: var(--white);
+}
+
+body {
+  margin: 0.5rem;
+}
+
+h1 {
+  font-size: 1rem;
+}
+header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.66rem;
+}
+header h1 {
+  display: inline;
+  flex: 1;
+}
+fieldset {
+  border: 1px solid var(--black);
+  margin-bottom: 1rem;
+}
+fieldset p {
+  margin-top: 0.66rem;
+}
+
+input {
+  background-color: var(--blank);
+  padding: 0.33rem;
+}
+input[type="file"] {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--black);
+}
+
+label {
+  display: flex;
+  align-items: center;
+}
+
+label span {
+  flex: 1;
+
+}
+
+[property="simp:inputLength"],
+[property="simp:pagesPerSignature"] {
+  font-weight: bold;
+}
+input[type="number"] {
+  width: 3rem;
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  text-align: right;
 }
 
-a:hover {
-  color: #535bf2;
+.txt-right {
+  text-align: right;
 }
 
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.8;
-  border-color: gray;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
-}
-
-rect {
-  width: 1px;
-  height: 1px;
-  fill: white;
-  border: 1px solid white;
-}
-.pupil {
-  transform: translate3d(0, 0, 0);
-  transition: transform linear 100ms;
-}
-.pupil.shifty {
-  transform: translate3d(-1px, 0, 0);
-  transition: transform linear 100ms;
+embed {
+  width: 100%;
+  height: 100vh;
 }

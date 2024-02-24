@@ -22,6 +22,6 @@
   - [ ] Show Info
     - [x] Show logo
       - [x] Eyes follow cursor/focus
-    - [ ] Show name, version, source, url, etc
+    - [x] Show name, version, source, url, etc
   - [ ] Show Preferences
     - [ ] Choose default values

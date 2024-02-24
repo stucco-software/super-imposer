@@ -25,7 +25,9 @@ const displaySignatureSize = (size) => {
   $('simp:pagesPerSignature').innerText = size
 }
 
-const savePDF = async (uint8arr, pages) => {
+const bc_preview = new BroadcastChannel("preview_channel")
+
+const imposeFile = (uint8arr, pages) => {
   // pass options to the imposer
   // the DOM is a the state, its fine
   const imposeX = $('simp:imposeX').value
@@ -41,8 +43,18 @@ const savePDF = async (uint8arr, pages) => {
     imposeX,
     imposeY
   })
+  return outFile
+}
+
+const previewPDF = async (uint8arr, pages) => {
+  console.log('send message')
+  const outFile = imposeFile(uint8arr, pages)
+  bc_preview.postMessage(outFile)
+}
+
+const savePDF = async (uint8arr, pages) => {
+  const outFile = imposeFile(uint8arr, pages)
   await saveFile(outFile)
-  console.log(`done!`)
 }
 
 const showOptions = (uint8arr) => {
@@ -84,8 +96,9 @@ const showOptions = (uint8arr) => {
   // saveConfig.removeAttribute('disabled')
 
   // TODO: enable pdf preview
-  // const showPreview = $('simp:showPreview')
-  // showPreview.removeAttribute('disabled')
+  const showPreview = $('simp:showPreview')
+  showPreview.removeAttribute('disabled')
+  showPreview.addEventListener('click', e => previewPDF(uint8arr, length))
 
   const outputPDF = $('simp:outputPDF')
   outputPDF.removeAttribute('disabled')
