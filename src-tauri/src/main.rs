@@ -7,9 +7,47 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
+
 fn main() {
+    let menu = Menu::new()
+        .add_submenu(Submenu::new(
+          "App",
+          Menu::new()
+            .add_item(CustomMenuItem::new("about", "About"))
+            .add_item(CustomMenuItem::new("updates", "Check for Updates"))
+            .add_item(CustomMenuItem::new("changelog", "Changelog"))
+            .add_native_item(MenuItem::Separator)
+            .add_item(CustomMenuItem::new("settings", "Settings"))
+            .add_native_item(MenuItem::Separator)
+            .add_native_item(MenuItem::Hide)
+            .add_native_item(MenuItem::HideOthers)
+            .add_native_item(MenuItem::ShowAll)
+            .add_native_item(MenuItem::Separator)
+            .add_native_item(MenuItem::Quit),
+        ))
+        .add_submenu(Submenu::new(
+          "File",
+          Menu::new()
+            .add_item(CustomMenuItem::new("new", "New Project"))
+            .add_native_item(MenuItem::CloseWindow)
+        ))
+        .add_submenu(Submenu::new(
+          "View",
+          Menu::new()
+            .add_item(CustomMenuItem::new("preview", "Preview"))
+            .add_native_item(MenuItem::CloseWindow)
+        ))
+        .add_submenu(Submenu::new(
+          "Help",
+          Menu::new()
+            .add_item(CustomMenuItem::new("help", "Documentation"))
+        ));
+
+
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .menu(menu)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -2,6 +2,7 @@ import { imposePDF } from './Impose.js'
 const { invoke } = window.__TAURI__.tauri
 const { save } = window.__TAURI__.dialog
 const { writeBinaryFile } = window.__TAURI__.fs
+const { WebviewWindow } = window.__TAURI__.window
 
 const defaults = new Map([
   ['signatures', 1],
@@ -29,7 +30,7 @@ const bc_preview = new BroadcastChannel("preview_channel")
 
 const imposeFile = (uint8arr, pages) => {
   // pass options to the imposer
-  // the DOM is a the state, its fine
+  // the DOM is the state, its fine
   const imposeX = $('simp:imposeX').value
   const imposeY = $('simp:imposeY').value
   const signatures = $('simp:outputSignatures').value
@@ -46,8 +47,9 @@ const imposeFile = (uint8arr, pages) => {
   return outFile
 }
 
+const previewWindow = WebviewWindow.getByLabel('preview')
 const previewPDF = async (uint8arr, pages) => {
-  console.log('send message')
+  previewWindow.show()
   const outFile = imposeFile(uint8arr, pages)
   bc_preview.postMessage(outFile)
 }
@@ -117,10 +119,14 @@ const processFile = async e => {
 }
 
 const main = async () => {
-  // const form = document.querySelector('form')
-  // form.addEventListener('submit', await processFile)
   const sourceInput = $('simp:input')
   sourceInput.addEventListener('change', await processFile)
+
+  const aboutWindow = WebviewWindow.getByLabel('about')
+  const showAbout = $('simp:showAbout')
+  showAbout.addEventListener('click', () => {
+    aboutWindow.show()
+  })
 }
 
 window.addEventListener("DOMContentLoaded", () => {
