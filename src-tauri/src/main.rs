@@ -13,7 +13,7 @@ fn main() {
             .add_item(CustomMenuItem::new("updates", "Check for Updates").disabled())
             .add_item(CustomMenuItem::new("changelog", "Changelog").disabled())
             .add_native_item(MenuItem::Separator)
-            .add_item(CustomMenuItem::new("settings", "Settings").disabled())
+            .add_item(CustomMenuItem::new("settings", "Settings"))
             .add_native_item(MenuItem::Separator)
             .add_native_item(MenuItem::Hide)
             .add_native_item(MenuItem::HideOthers)
@@ -24,13 +24,13 @@ fn main() {
         .add_submenu(Submenu::new(
           "File",
           Menu::new()
-            .add_item(CustomMenuItem::new("new", "New Project").accelerator("CmdOrCtrl+N").disabled())
+            .add_item(CustomMenuItem::new("new", "New Project").accelerator("CmdOrCtrl+N"))
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new(
           "View",
           Menu::new()
-            .add_item(CustomMenuItem::new("preview", "Preview").disabled())
+            .add_item(CustomMenuItem::new("preview", "Preview").accelerator("CmdOrCtrl+P"))
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new(
@@ -42,17 +42,36 @@ fn main() {
 
 
     tauri::Builder::default()
-        .setup(|app| {
-            Ok(())
-        })
         .menu(menu)
         .on_menu_event(|event| {
           match event.menu_item_id() {
             "about" => {
-                let window = event.window().clone();
-                let about_window = window.get_window("about").unwrap();
+                let about_window = event
+                    .window()
+                    .get_window("about")
+                    .unwrap();
                 about_window.show();
-                println!("It works!");
+            }
+            "settings" => {
+                let settings_window = event
+                    .window()
+                    .get_window("settings")
+                    .unwrap();
+                settings_window.show();
+            }
+            "new" => {
+                let new_window = event
+                    .window()
+                    .get_window("new")
+                    .unwrap();
+                new_window.show();
+            }
+            "preview" => {
+                let preview_window = event
+                    .window()
+                    .get_window("preview")
+                    .unwrap();
+                preview_window.show();
             }
             _ => {}
           }
