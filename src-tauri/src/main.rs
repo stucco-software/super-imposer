@@ -1,12 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
+use tauri::Manager;
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 fn main() {
@@ -14,7 +9,7 @@ fn main() {
         .add_submenu(Submenu::new(
           "App",
           Menu::new()
-            .add_item(CustomMenuItem::new("about", "About").disabled())
+            .add_item(CustomMenuItem::new("about", "About"))
             .add_item(CustomMenuItem::new("updates", "Check for Updates").disabled())
             .add_item(CustomMenuItem::new("changelog", "Changelog").disabled())
             .add_native_item(MenuItem::Separator)
@@ -29,7 +24,7 @@ fn main() {
         .add_submenu(Submenu::new(
           "File",
           Menu::new()
-            .add_item(CustomMenuItem::new("new", "New Project").disabled())
+            .add_item(CustomMenuItem::new("new", "New Project").accelerator("CmdOrCtrl+N").disabled())
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new(
@@ -47,7 +42,28 @@ fn main() {
 
 
     tauri::Builder::default()
+        .setup(|app| {
+            Ok(())
+        })
         .menu(menu)
+        .on_menu_event(|event| {
+          match event.menu_item_id() {
+            "about" => {
+                let window = event.window().clone();
+                let about_window = window.get_window("about").unwrap();
+                about_window.show();
+                println!("It works!");
+            }
+            _ => {}
+          }
+        })
+        .on_window_event(|event| match event.event() {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                event.window().hide().unwrap();
+                api.prevent_close();
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
