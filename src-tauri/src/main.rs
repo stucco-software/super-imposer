@@ -14,11 +14,11 @@ fn main() {
         .add_submenu(Submenu::new(
           "App",
           Menu::new()
-            .add_item(CustomMenuItem::new("about", "About"))
-            .add_item(CustomMenuItem::new("updates", "Check for Updates"))
-            .add_item(CustomMenuItem::new("changelog", "Changelog"))
+            .add_item(CustomMenuItem::new("about", "About").disabled())
+            .add_item(CustomMenuItem::new("updates", "Check for Updates").disabled())
+            .add_item(CustomMenuItem::new("changelog", "Changelog").disabled())
             .add_native_item(MenuItem::Separator)
-            .add_item(CustomMenuItem::new("settings", "Settings"))
+            .add_item(CustomMenuItem::new("settings", "Settings").disabled())
             .add_native_item(MenuItem::Separator)
             .add_native_item(MenuItem::Hide)
             .add_native_item(MenuItem::HideOthers)
@@ -29,19 +29,19 @@ fn main() {
         .add_submenu(Submenu::new(
           "File",
           Menu::new()
-            .add_item(CustomMenuItem::new("new", "New Project"))
+            .add_item(CustomMenuItem::new("new", "New Project").disabled())
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new(
           "View",
           Menu::new()
-            .add_item(CustomMenuItem::new("preview", "Preview"))
+            .add_item(CustomMenuItem::new("preview", "Preview").disabled())
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new(
           "Help",
           Menu::new()
-            .add_item(CustomMenuItem::new("help", "Documentation"))
+            .add_item(CustomMenuItem::new("help", "Documentation").disabled())
         ));
 
 
