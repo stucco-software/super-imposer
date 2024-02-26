@@ -1,14 +1,21 @@
 import { imposePDF } from './Impose.js'
 const { invoke } = window.__TAURI__.tauri
 const { save } = window.__TAURI__.dialog
-const { writeBinaryFile } = window.__TAURI__.fs
+const { writeBinaryFile, writeTextFile, readTextFile, createDir, exists } = window.__TAURI__.fs
 const { WebviewWindow } = window.__TAURI__.window
+const { appConfigDir } = window.__TAURI__.path
 
 const defaults = new Map([
   ['signatures', 1],
   ['imposeX', 2],
   ['imposeY', 1],
 ])
+const defaultsObj = {
+  "@context": "https://super-imposer.stucco.software/vocabulary",
+  signatures: 1,
+  imposeX: 2,
+  imposeY: 1
+}
 
 const $ = (p) => document.querySelector(`[name="${p}"]`) || document.querySelector(`[property="${p}"]`)
 
@@ -20,6 +27,11 @@ const saveFile = async (outFile) => {
     }]
   });
   await writeBinaryFile(filePath, outFile, { path: filePath })
+}
+
+const writeDefaultConfig = async (filePath) => {
+  const stringified = JSON.stringify(defaultsObj)
+  await writeTextFile(filePath, stringified, { path: filePath })
 }
 
 const displaySignatureSize = (size) => {
@@ -70,7 +82,7 @@ const showOptions = (uint8arr) => {
   // set default signatures & allow inputs
   const signatureInput = $('simp:outputSignatures')
   signatureInput.removeAttribute('disabled')
-  signatureInput.value = defaults.get('signatures')
+  signatureInput.value = Number(localStorage.getItem('signatures'))
 
   // Calcute signature sizes
   let signatures = signatureInput.value
@@ -90,8 +102,8 @@ const showOptions = (uint8arr) => {
   const imposeY = $('simp:imposeY')
   imposeX.removeAttribute('disabled')
   imposeY.removeAttribute('disabled')
-  imposeX.value = defaults.get('imposeX')
-  imposeY.value = defaults.get('imposeY')
+  imposeX.value = Number(localStorage.getItem('imposeX'))
+  imposeY.value = Number(localStorage.getItem('imposeY'))
 
   // TODO: allow project saves
   // const saveConfig = $('simp:saveConfig')
@@ -118,17 +130,77 @@ const processFile = async e => {
   reader.readAsArrayBuffer(file)
 }
 
-const main = async () => {
-  const sourceInput = $('simp:input')
-  sourceInput.addEventListener('change', await processFile)
+const saveConfig = async (filePath, obj) => {
+  const stringified = JSON.stringify(obj)
+  await writeTextFile(filePath, stringified, { path: filePath })
+}
 
-  const aboutWindow = WebviewWindow.getByLabel('about')
-  const showAbout = $('simp:showAbout')
-  showAbout.addEventListener('click', () => {
-    aboutWindow.show()
+const bc_update_settings = new BroadcastChannel("settings_channel")
+
+const loadConfig = async (configObj) => {
+  const keys = Object.keys(configObj)
+  keys.forEach(key => {
+    localStorage.setItem(key, configObj[key])
   })
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+const readConfig = async (configPath) => {
+  const config = await readTextFile(configPath)
+  const configObj = JSON.parse(config)
+  loadConfig(configObj)
+}
+
+bc_update_settings.onmessage = (event) => {
+  console.log('update dem settings')
+  console.log(event.data)
+  loadConfig(event.data)
+}
+
+const saveDefaults = (defaultInputs) => async (e) => {
+  const appConfigDirPath = await appConfigDir()
+  let values = {}
+  defaultInputs.forEach(input => {
+    values[input.name] = Number(input.value)
+  })
+  let newDefaults = Object.assign(defaultsObj, values)
+  await saveConfig(`${appConfigDirPath}config.json`, newDefaults)
+  bc_update_settings.postMessage(newDefaults)
+}
+
+
+
+const main = async () => {
+  const sourceInput = $('simp:input')
+  if (sourceInput)
+    sourceInput.addEventListener('change', await processFile)
+
+  const aboutWindow = WebviewWindow.getByLabel('about')
+  const showAbout = $('simp:showAbout')
+  if (showAbout)
+    showAbout.addEventListener('click', () => {
+      aboutWindow.show()
+    })
+
+  const defaultInputs = [...document.querySelectorAll('.defaultInput')]
+  const saveFn = saveDefaults(defaultInputs)
+  defaultInputs.forEach(node => {
+    node.addEventListener('change', saveFn)
+  })
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+
+  // TODO: Could be refactored out of this module
+  const appConfigDirPath = await appConfigDir()
+  const configDirExists = await exists(appConfigDirPath)
+  if (!configDirExists) {
+    await createDir(appConfigDirPath)
+  }
+  const configFileExists = await exists(`${appConfigDirPath}config.json`)
+  if (!configFileExists) {
+    await writeDefaultConfig(`${appConfigDirPath}config.json`)
+  }
+
+  await loadConfig(`${appConfigDirPath}config.json`)
   main()
 })
