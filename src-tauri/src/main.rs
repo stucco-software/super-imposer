@@ -4,6 +4,12 @@
 use tauri::Manager;
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
+// the payload type must implement `Serialize` and `Clone`.
+#[derive(Clone, serde::Serialize)]
+struct Payload {
+  message: String,
+}
+
 fn main() {
     let menu = Menu::new()
         .add_submenu(Submenu::new(
@@ -25,6 +31,10 @@ fn main() {
           "File",
           Menu::new()
             .add_item(CustomMenuItem::new("new", "New Project").accelerator("CmdOrCtrl+N"))
+            .add_item(CustomMenuItem::new("open", "Open").accelerator("CmdOrCtrl+O"))
+            .add_item(CustomMenuItem::new("save", "Save").accelerator("CmdOrCtrl+S"))
+            .add_item(CustomMenuItem::new("save_as", "Save As").accelerator("CmdOrCtrl+Shift+S"))
+            .add_item(CustomMenuItem::new("impose", "Impose PDF").accelerator("CmdOrCtrl+Shift+E"))
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new(
@@ -65,6 +75,42 @@ fn main() {
                     .get_window("new")
                     .unwrap();
                 new_window.show();
+            }
+            "save" => {
+                println!("Save This Project!");
+                event
+                  .window()
+                  .emit("save_project", Payload {
+                    message: "save_project".to_string()
+                  })
+                  .unwrap();
+            }
+            "save_as" => {
+                println!("Save This Project As!");
+                event
+                  .window()
+                  .emit("save_project_as", Payload {
+                    message: "save_project_as".to_string()
+                  })
+                  .unwrap();
+            }
+            "open" => {
+                println!("Open New Project!");
+                event
+                  .window()
+                  .emit("open_project", Payload {
+                    message: "open_project".to_string()
+                  })
+                  .unwrap();
+            }
+            "impose" => {
+                println!("impose this pdf!");
+                event
+                  .window()
+                  .emit("impose", Payload {
+                    message: "impose".to_string()
+                  })
+                  .unwrap();
             }
             "preview" => {
                 let preview_window = event

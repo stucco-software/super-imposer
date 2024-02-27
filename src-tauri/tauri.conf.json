@@ -24,7 +24,8 @@
         "show": true
       },
       "dialog": {
-        "save": true
+        "save": true,
+        "open": true
       },
       "all": false,
       "shell": {
@@ -53,7 +54,7 @@
         "label": "new",
         "fullscreen": false,
         "resizable": false,
-        "title": "New Project",
+        "title": "Input",
         "width": 300,
         "height": 425
       },{

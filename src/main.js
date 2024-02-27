@@ -1,15 +1,11 @@
 import { imposePDF } from './Impose.js'
 const { invoke } = window.__TAURI__.tauri
-const { save } = window.__TAURI__.dialog
+const { save, open } = window.__TAURI__.dialog
 const { writeBinaryFile, writeTextFile, readTextFile, createDir, exists } = window.__TAURI__.fs
 const { WebviewWindow } = window.__TAURI__.window
 const { appConfigDir } = window.__TAURI__.path
+const { listen } = window.__TAURI__.event
 
-const defaults = new Map([
-  ['signatures', 1],
-  ['imposeX', 2],
-  ['imposeY', 1],
-])
 const defaultsObj = {
   "@context": "https://super-imposer.stucco.software/vocabulary",
   signatures: 1,
@@ -45,7 +41,7 @@ const imposeFile = (uint8arr, pages) => {
   // the DOM is the state, its fine
   const imposeX = $('simp:imposeX').value
   const imposeY = $('simp:imposeY').value
-  const signatures = $('simp:outputSignatures').value
+  const signatures = $('simp:signatures').value
   // x times y pages per side, 2 sides per leaf,
   const pagesPerSheet = imposeX * imposeY * 2
   const sheets = pages / pagesPerSheet
@@ -80,9 +76,10 @@ const showOptions = (uint8arr) => {
   $('simp:inputLength').innerText = length
 
   // set default signatures & allow inputs
-  const signatureInput = $('simp:outputSignatures')
+  const signatureInput = $('simp:signatures')
   signatureInput.removeAttribute('disabled')
-  signatureInput.value = Number(localStorage.getItem('signatures'))
+  if (signatureInput.value == 0 || signatureInput.value == '0')
+    signatureInput.value = Number(localStorage.getItem('signatures'))
 
   // Calcute signature sizes
   let signatures = signatureInput.value
@@ -102,12 +99,10 @@ const showOptions = (uint8arr) => {
   const imposeY = $('simp:imposeY')
   imposeX.removeAttribute('disabled')
   imposeY.removeAttribute('disabled')
-  imposeX.value = Number(localStorage.getItem('imposeX'))
-  imposeY.value = Number(localStorage.getItem('imposeY'))
-
-  // TODO: allow project saves
-  // const saveConfig = $('simp:saveConfig')
-  // saveConfig.removeAttribute('disabled')
+  if (imposeX.value == 0 || imposeX.value == '0')
+    imposeX.value = Number(localStorage.getItem('imposeX'))
+  if (imposeY.value == 0 || imposeY.value == '0')
+    imposeY.value = Number(localStorage.getItem('imposeY'))
 
   // TODO: enable pdf preview
   const showPreview = $('simp:showPreview')
@@ -117,6 +112,7 @@ const showOptions = (uint8arr) => {
   const outputPDF = $('simp:outputPDF')
   outputPDF.removeAttribute('disabled')
   outputPDF.addEventListener('click', e => savePDF(uint8arr, length))
+  listen('impose', e => savePDF(uint8arr, length))
 }
 
 const processFile = async e => {
@@ -151,23 +147,55 @@ const readConfig = async (configPath) => {
 }
 
 bc_update_settings.onmessage = (event) => {
-  console.log('update dem settings')
-  console.log(event.data)
   loadConfig(event.data)
 }
 
-const saveDefaults = (defaultInputs) => async (e) => {
-  const appConfigDirPath = await appConfigDir()
-  let values = {}
-  defaultInputs.forEach(input => {
-    values[input.name] = Number(input.value)
-  })
-  let newDefaults = Object.assign(defaultsObj, values)
-  await saveConfig(`${appConfigDirPath}config.json`, newDefaults)
-  bc_update_settings.postMessage(newDefaults)
+const saveCurrentProject = async (newSave = false) => {
+  let projectPath = $('simp:projectFilePath').value
+  const signatures = $('simp:signatures').value
+  const imposeX = $('simp:imposeX').value
+  const imposeY = $('simp:imposeY').value
+
+  if (projectPath.length === 0 || newSave) {
+    projectPath = await save({
+      filters: [{
+        name: 'File',
+        extensions: ['simp']
+      }]
+    });
+    $('simp:projectFilePath').value = projectPath
+  }
+
+  const projectConfig = {
+    "@context": "https://super-imposer.stucco.software/vocabulary",
+    projectPath: projectPath,
+    signatures: signatures,
+    imposeX: imposeX,
+    imposeY: imposeY
+  }
+  await saveConfig(projectPath, projectConfig)
 }
 
+const setProjectValues = (obj) => {
+  let keys = Object.keys(obj)
+  keys.forEach(key => {
+    let input = $(`simp:${key}`)
+    if (input)
+      input.value = obj[key]
+  })
+}
 
+const openProject = async () => {
+  const projectPath = await open({
+    filters: [{
+      name: 'File',
+      extensions: ['simp']
+    }]
+  });
+  const projectConfig = await readTextFile(projectPath)
+  const projectObj = JSON.parse(projectConfig)
+  setProjectValues(projectObj)
+}
 
 const main = async () => {
   const sourceInput = $('simp:input')
@@ -181,10 +209,16 @@ const main = async () => {
       aboutWindow.show()
     })
 
-  const defaultInputs = [...document.querySelectorAll('.defaultInput')]
-  const saveFn = saveDefaults(defaultInputs)
-  defaultInputs.forEach(node => {
-    node.addEventListener('change', saveFn)
+  // TODO: Could be combined?
+  const unlistenSave = await listen('save_project', async (event) => {
+    await saveCurrentProject()
+  })
+  const unlistenSaveAs = await listen('save_project_as', async (event) => {
+    await saveCurrentProject(true)
+  })
+
+  const unlistenOpen = await listen('open_project', async (event) => {
+    await openProject()
   })
 }
 
