@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "Super Imposer",
-    "version": "0.0.0"
+    "version": "2024.2.27"
   },
   "tauri": {
     "allowlist": {
