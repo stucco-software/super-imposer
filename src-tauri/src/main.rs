@@ -60,21 +60,21 @@ fn main() {
                     .window()
                     .get_window("about")
                     .unwrap();
-                about_window.show();
+                let _ = about_window.show();
             }
             "settings" => {
                 let settings_window = event
                     .window()
                     .get_window("settings")
                     .unwrap();
-                settings_window.show();
+                let _ = settings_window.show();
             }
             "new" => {
                 let new_window = event
                     .window()
                     .get_window("new")
                     .unwrap();
-                new_window.show();
+                let _ = new_window.show();
             }
             "save" => {
                 println!("Save This Project!");
@@ -117,7 +117,7 @@ fn main() {
                     .window()
                     .get_window("preview")
                     .unwrap();
-                preview_window.show();
+                let _ = preview_window.show();
             }
             _ => {}
           }

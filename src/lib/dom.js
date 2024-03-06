@@ -1,0 +1,1 @@
+export const $ = (p) => document.querySelector(`[name="${p}"]`) || document.querySelector(`[property="${p}"]`)
