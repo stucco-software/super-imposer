@@ -24,6 +24,7 @@
         "show": true
       },
       "dialog": {
+        "message": true,
         "save": true,
         "open": true
       },

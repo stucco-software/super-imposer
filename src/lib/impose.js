@@ -14,6 +14,9 @@ export const imposePDF = async ({data, signatures, imposeX = 2, imposeY = 1}) =>
     console.log('try this!')
     coherentpdf.impose(orderedPDF, imposeX, imposeY, false, false, false, false, false, 100, 0, 0)
   } catch (e) {
+    coherentpdf.deletePdf(pdf)
+    coherentpdf.deletePdf(orderedPDF)
+    window.alert('An error occured when imposing this PDF. Try re-exporting the PDF and restarting the app.')
     console.error(e)
   }
   const out = coherentpdf.toMemory(orderedPDF, false, false)
