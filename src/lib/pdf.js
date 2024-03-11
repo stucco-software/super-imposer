@@ -37,6 +37,8 @@ export const previewPDF = async (uint8arr, length) => {
   previewWindow.show()
 
   const outFile = await imposeFile(uint8arr, length)
+  console.log('did we impose?')
+  console.log(outFile)
   bc_preview.postMessage(outFile)
 }
 
@@ -48,7 +50,13 @@ export const savePDF = async (uint8arr, length) => {
       extensions: ['pdf']
     }]
   });
-  await writeBinaryFile(filePath, outFile, { path: filePath })
+  try {
+    await writeBinaryFile(filePath, outFile, { path: filePath })
+  } catch (e) {
+    window.alert('Error writing PDF')
+    console.error(e)
+  }
+
 }
 
 export const embedPDF = (src) => {

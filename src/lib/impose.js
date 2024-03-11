@@ -20,6 +20,8 @@ export const imposePDF = async ({data, signatures, imposeX = 2, imposeY = 1}) =>
     console.error(e)
   }
   const out = coherentpdf.toMemory(orderedPDF, false, false)
+  console.log('did it work?')
+  console.log(out)
   coherentpdf.deletePdf(pdf)
   coherentpdf.deletePdf(orderedPDF)
   return out

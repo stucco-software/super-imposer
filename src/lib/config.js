@@ -1,5 +1,6 @@
 const { appConfigDir } = window.__TAURI__.path
 const {
+  readTextFile,
   writeTextFile,
   createDir,
   exists
@@ -8,6 +9,8 @@ const {
 export const getAppConfigPath = async () => {
   const appConfigDirPath = await appConfigDir()
   const appConfigFilePath = `${appConfigDirPath}config.json`
+  console.log(appConfigDirPath)
+  console.log(appConfigFilePath)
   return appConfigFilePath
 }
 
@@ -23,9 +26,13 @@ const writeDefaultConfig = async (filePath) => {
   await writeTextFile(filePath, stringified, { path: filePath })
 }
 
-export const loadConfig = async (configObj) => {
+export const loadConfig = async (configPath) => {
+  let config = await readTextFile(configPath)
+  let configObj = JSON.parse(config)
+  console.log(configObj)
   const keys = Object.keys(configObj)
   keys.forEach(key => {
+    console.log(key, configObj[key])
     localStorage.setItem(key, configObj[key])
   })
 }
