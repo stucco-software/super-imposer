@@ -1,4 +1,4 @@
-import { bookPageOrder } from './bookPageOrder.js'
+import { bookPageOrder } from '/lib/bookPageOrder.js'
 
 export const imposePDF = async ({data, signatures, imposeX = 2, imposeY = 1}) => {
   let pdf = coherentpdf.fromMemory(data, "")
