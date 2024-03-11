@@ -40,3 +40,4 @@ jobs:
           releaseDraft: false
           prerelease: false
           includeDebug: true
+          args: --debug
